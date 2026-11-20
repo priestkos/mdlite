@@ -1,0 +1,9 @@
+node_modules/
+dist/
+release/
+windows-exe/
+test-results/
+playwright-report/
+evidence/
+notices/
+*.log

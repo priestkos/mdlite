@@ -1,0 +1,11 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
+import pngToIco from 'png-to-ico';
+const dir = fileURLToPath(new URL('../assets/', import.meta.url));
+const svg = await readFile(`${dir}/mark.svg`);
+const sizes = [16, 24, 32, 48, 64, 128, 256];
+const images = await Promise.all(sizes.map(size => sharp(svg).resize(size, size).png().toBuffer()));
+await writeFile(`${dir}/icon.png`, images[images.length - 1]);
+await writeFile(`${dir}/icon.ico`, await pngToIco(images));
+console.log('Generated assets/icon.png and assets/icon.ico');

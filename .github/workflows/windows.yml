@@ -1,0 +1,49 @@
+name: Windows build and verification
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm audit --omit=dev
+      - run: npm run build
+      - name: Exercise the actual Electron window
+        run: npm run test:gui
+      - name: Build portable Windows executable (no publication)
+        run: npm run pack:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Exercise packaged application
+        shell: pwsh
+        run: |
+          $env:MDLITE_EXECUTABLE_PATH = (Resolve-Path release/win-unpacked/mdlite.exe).Path
+          npm run test:gui
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Smoke portable launcher and capture native Windows frame
+        shell: pwsh
+        run: ./scripts/smoke-portable.ps1
+      - name: Hash executable
+        shell: pwsh
+        run: |
+          Get-FileHash release/mdlite-*-windows-x64.exe -Algorithm SHA256 | Format-List | Out-File evidence/windows-sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mdlite-windows-x64
+          path: |
+            release/mdlite-*-windows-x64.exe
+            evidence/
+            test-results/
+          retention-days: 30
