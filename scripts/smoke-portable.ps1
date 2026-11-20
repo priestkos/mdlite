@@ -35,7 +35,11 @@ try {
     "Portable editor title: $($window.MainWindowTitle)" | Tee-Object evidence/portable-smoke.txt
     $window.CloseMainWindow() | Out-Null
     if (-not $window.WaitForExit(15000)) { throw 'Portable editor did not close cleanly.' }
+    # NSIS removes its extracted files after the editor exits; let the launcher
+    # finish instead of racing taskkill against a normally exiting process tree.
+    if (-not $launcher.WaitForExit(30000)) { throw 'Portable launcher did not finish cleanup.' }
 } finally {
-    # Kill only the process tree created by this smoke test if cleanup is needed.
-    if (-not $launcher.HasExited) { taskkill /PID $launcher.Id /T /F | Out-Null }
+    if (-not $launcher.HasExited) {
+        Stop-Process -Id $launcher.Id -Force -ErrorAction SilentlyContinue
+    }
 }
