@@ -16,7 +16,7 @@ Run the portable `mdlite-0.1.0-windows-x64.exe`. No Node.js installation is requ
 
 **Ctrl+N** New · **Ctrl+O** Open · **Ctrl+S** Save · **Ctrl+Shift+S** Save as.
 
-Open and save dialogs support `.md` / `.markdown`. UTF-8 only, maximum 10 MB. Use Source for advanced Markdown. **Rich-text editing can normalize whitespace, list markers and other syntax, and does not preserve every Markdown extension.** Merely viewing a file or changing modes should not rewrite its source. External images, HTML execution and link navigation are disabled for safety. This version does not preview local images, render math/Mermaid, or provide an automatic recovery/autosave system.
+Open and save dialogs support `.md` / `.markdown`. UTF-8 only, maximum 10 MB. Source drafts above one million characters pause word-count/outline work and stay in Source until reduced; unsavable drafts still prompt on close. Use Source for advanced Markdown. **Rich-text editing can normalize whitespace, list markers and other syntax, and does not preserve every Markdown extension.** Merely viewing a file or changing modes should not rewrite its source. External images, HTML execution and link navigation are disabled for safety. This version does not preview local images, render math/Mermaid, or provide an automatic recovery/autosave system.
 
 Saving checks for changes made outside mdlite and asks you to use Save as rather than overwrite them. Same-directory temporary writes avoid ordinary partial-write corruption; this is not a concurrent or hostile-filesystem transaction. Keep backups of important work.
 
