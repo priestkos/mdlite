@@ -62,3 +62,23 @@ test('invalid draft remains protected on close and cannot be saved as clean', as
   expect(app.windows()).toHaveLength(1);
   expect(await fs.stat(target).catch(()=>null)).toBeNull();
 });
+
+test('large real clipboard paste remains dirty and native close prompts', async () => {
+  test.setTimeout(60000);
+  await page.getByRole('button',{name:'New',exact:true}).click();
+  await page.getByRole('button',{name:'Source',exact:true}).click();
+  const errors=[]; page.on('pageerror', error=>errors.push(error.message));
+  await app.evaluate(({clipboard,dialog})=>{
+    clipboard.writeText('x'.repeat(10*1024*1024+1));
+    global.closePrompts=0;
+    dialog.showMessageBox=async()=>{global.closePrompts++;return {response:2};};
+  });
+  await page.getByLabel('Markdown source').click();
+  await page.keyboard.press('ControlOrMeta+v');
+  await expect.poll(()=>page.locator('#source').evaluate(el=>el.value.length), {timeout:20000}).toBe(10485761);
+  await expect.poll(()=>page.evaluate(async()=>{const doc=await window.mdlite.getDocument();return {length:doc.text.length,dirty:doc.dirty};})).toEqual({length:10485761,dirty:true});
+  expect(errors).toEqual([]);
+  await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].close());
+  await expect.poll(()=>app.evaluate(()=>global.closePrompts)).toBe(1);
+  expect(app.windows()).toHaveLength(1);
+});

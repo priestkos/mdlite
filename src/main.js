@@ -44,7 +44,7 @@ const editor = new Editor({
   extensions: [StarterKit.configure({ link: { openOnClick: false, autolink: false, linkOnPaste: false } }), Markdown.configure({ marked: inertMarkdown }), TableKit, TaskList, TaskItem.configure({ nested: true }), SafeImage],
   content: '',
   editorProps: { attributes: { 'aria-label': 'Document editor', spellcheck: 'true' }, handleClick(view, pos, event) { if (event.target.closest('a')) { event.preventDefault(); return true; } return false; } },
-  onUpdate() { if (!busy && mode === 'edit') { text = editor.getMarkdown(); dirty = true; renderMeta(); sendChange(text); } },
+  onUpdate() { if (!busy && mode === 'edit') { text = editor.getMarkdown(); dirty = true; sendChange(text); renderMeta(); } },
   onSelectionUpdate() { updateToolbar(); },
 });
 
@@ -58,11 +58,18 @@ function renderMeta() {
   const name = documentPath ? documentPath.split(/[\\/]/).pop() : 'Untitled';
   $('#document-name').textContent = name; $('#breadcrumb-name').textContent = name;
   $('#file-detail').textContent = dirty ? 'Unsaved changes' : documentPath ? 'Saved on your computer' : 'A fresh page';
+  if (text.length > 1000000) {
+    $('#word-count').textContent = 'Large document';
+    $('#outline').replaceChildren();
+    status('Large draft retained; word count and outline are paused. Files must be below 10 MB to save.');
+    return;
+  }
   const words = text.trim().match(/\S+/gu)?.length || 0;
   $('#word-count').textContent = `${words} ${words === 1 ? 'word' : 'words'}`;
   updateOutline();
 }
 function updateOutline() {
+  if (text.length > 1000000) { $('#outline').replaceChildren(); return; }
   const nav = $('#outline'); nav.replaceChildren();
   // Outline derives from parsed document; source mode shows headings in the current source.
   const headings = mode === 'source' ? [...text.matchAll(/^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/gm)].map(m => ({ level: m[1].length, label: m[2] })) : [...$('#editor').querySelectorAll('h1,h2,h3,h4,h5,h6')].map(el => ({ level: Number(el.tagName[1]), label: el.textContent, element: el }));
@@ -106,6 +113,10 @@ async function action(name) {
 }
 function setMode(next) {
   if (busy || next === mode) return;
+  if (mode === 'source' && sourceEdited && text.length > 1000000) {
+    status('This large draft is available in Source. Reduce it before switching views.');
+    return;
+  }
   if (mode === 'source' && sourceEdited) { renderEditor(true); sourceEdited = false; }
   mode = next;
   source.hidden = next !== 'source'; $('#editor').hidden = next === 'source'; $('#source-warning').hidden = next !== 'source';
@@ -123,7 +134,7 @@ $$('[data-format]').forEach(button => button.addEventListener('click', () => {
   updateToolbar();
 }));
 $('#typography').addEventListener('change', event => { const chain = editor.chain().focus(); if (event.target.value === 'paragraph') chain.setParagraph().run(); else chain.toggleHeading({ level: Number(event.target.value) }).run(); });
-source.addEventListener('input', () => { text = source.value; sourceEdited = true; dirty = true; renderMeta(); sendChange(text); });
+source.addEventListener('input', () => { text = source.value; sourceEdited = true; dirty = true; sendChange(text); renderMeta(); });
 document.addEventListener('click', event => { if (event.target.closest('a')) event.preventDefault(); });
 document.addEventListener('keydown', event => { if (!(event.ctrlKey || event.metaKey) || event.altKey) return; const key = event.key.toLowerCase(); const name = key === 'n' ? 'new' : key === 'o' ? 'open' : key === 's' ? (event.shiftKey ? 'save-as' : 'save') : null; if (name) { event.preventDefault(); action(name); } });
 window.close = () => { action('close'); };
