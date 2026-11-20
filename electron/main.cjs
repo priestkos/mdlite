@@ -115,6 +115,12 @@ async function createWindow() {
     if (!await confirmDiscard()) return null;
     return store.reset();
   });
+  register('document:close', async () => {
+    if (await confirmDiscard()) {
+      allowClose = true;
+      setImmediate(() => window.destroy());
+    }
+  });
   register('document:save', (text, saveAs) => {
     if (typeof saveAs !== 'boolean') throw new Error('Invalid save request.');
     return saveDocument(text, saveAs);
@@ -138,10 +144,9 @@ async function createWindow() {
     if (allowClose) return;
     event.preventDefault();
     if (busy) return;
-    busy = true;
-    confirmDiscard().then(confirmed => {
-      if (confirmed) { allowClose = true; window.close(); }
-    }).catch(showError).finally(() => { busy = false; });
+    // Route native close through the renderer's edit queue before consulting
+    // the store; even same-turn edits must reach the unsaved-changes prompt.
+    window.webContents.send('command', 'close');
   });
   await window.loadURL(entry);
   updateTitle();

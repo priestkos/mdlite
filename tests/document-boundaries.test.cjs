@@ -32,7 +32,6 @@ test('invalid UTF-8, oversize input and failed reads leave current document unto
   await assert.rejects(() => store.open(target), /smaller than 10 MB/);
   await assert.rejects(() => store.open(path.join(folder, 'missing.md')), /ENOENT/);
   assert.throws(() => store.changed({ text: 'bad' }), /UTF-8 text/);
-  assert.throws(() => store.changed('x'.repeat(MAX_BYTES + 1)), /smaller than 10 MB/);
   assert.deepEqual(store.snapshot(), { path: null, text: 'keep me', dirty: false });
 }));
 

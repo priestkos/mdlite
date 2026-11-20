@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('mdlite', {
   open: () => ipcRenderer.invoke('document:open'),
   newDocument: () => ipcRenderer.invoke('document:new'),
   save: (text, saveAs = false) => ipcRenderer.invoke('document:save', text, saveAs),
+  close: () => ipcRenderer.invoke('document:close'),
   changed: text => ipcRenderer.invoke('document:changed', text),
   onCommand: callback => {
     const handler = (_event, command) => callback(command);

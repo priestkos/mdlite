@@ -7,6 +7,28 @@ import { TableKit } from '@tiptap/extension-table';
 import { TaskList } from '@tiptap/extension-task-list';
 import { TaskItem } from '@tiptap/extension-task-item';
 import { Image } from '@tiptap/extension-image';
+import { marked } from 'marked';
+
+// Make HTML tokens literal at the lexer boundary, leaving fenced/inline code
+// tokens byte-for-byte intact. No raw HTML reaches TipTap's HTML parser.
+function inertTokens(tokens) {
+  for (const token of tokens) {
+    if (token.type === 'html') {
+      const literal = token.raw;
+      Object.assign(token, { type: token.block ? 'paragraph' : 'text', text: literal,
+        tokens: [{ type: 'text', raw: literal, text: literal }] });
+    } else {
+      if (token.tokens) inertTokens(token.tokens);
+      if (token.items) inertTokens(token.items);
+      for (const row of [token.header, ...(token.rows || [])]) if (row) inertTokens(row);
+    }
+  }
+  return tokens;
+}
+class InertLexer extends marked.Lexer {
+  lex(value) { return inertTokens(super.lex(value)); }
+}
+const inertMarkdown = { ...marked, Lexer: InertLexer };
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -19,16 +41,14 @@ const SafeImage = Image.extend({
 });
 const editor = new Editor({
   element: $('#editor'),
-  extensions: [StarterKit.configure({ link: { openOnClick: false, autolink: false, linkOnPaste: false } }), Markdown, TableKit, TaskList, TaskItem.configure({ nested: true }), SafeImage],
+  extensions: [StarterKit.configure({ link: { openOnClick: false, autolink: false, linkOnPaste: false } }), Markdown.configure({ marked: inertMarkdown }), TableKit, TaskList, TaskItem.configure({ nested: true }), SafeImage],
   content: '',
   editorProps: { attributes: { 'aria-label': 'Document editor', spellcheck: 'true' }, handleClick(view, pos, event) { if (event.target.closest('a')) { event.preventDefault(); return true; } return false; } },
   onUpdate() { if (!busy && mode === 'edit') { text = editor.getMarkdown(); dirty = true; renderMeta(); sendChange(text); } },
   onSelectionUpdate() { updateToolbar(); },
 });
 
-// Escape all raw HTML before the Markdown parser can create DOM nodes. The authoritative
-// source remains untouched until a real rich edit, at which point normalization is explicit.
-function parseForDisplay(value) { return value.replace(/^\uFEFF/, '').replaceAll('<', '&lt;'); }
+function parseForDisplay(value) { return value.replace(/^\uFEFF/, ''); }
 function renderEditor(resetHistory = false) {
   editor.commands.setContent(parseForDisplay(text), { contentType: 'markdown', emitUpdate: false });
   if (resetHistory) editor.view.updateState(EditorState.create({ doc: editor.state.doc, schema: editor.schema, plugins: editor.state.plugins }));
@@ -75,6 +95,7 @@ async function action(name) {
     await changeQueue;
     if (changeError) throw changeError;
     let doc;
+    if (name === 'close') { await window.mdlite.close(); return; }
     if (name === 'new') doc = await window.mdlite.newDocument();
     if (name === 'open') doc = await window.mdlite.open();
     if (name === 'save' || name === 'save-as') doc = await window.mdlite.save(text, name === 'save-as');
@@ -105,6 +126,12 @@ $('#typography').addEventListener('change', event => { const chain = editor.chai
 source.addEventListener('input', () => { text = source.value; sourceEdited = true; dirty = true; renderMeta(); sendChange(text); });
 document.addEventListener('click', event => { if (event.target.closest('a')) event.preventDefault(); });
 document.addEventListener('keydown', event => { if (!(event.ctrlKey || event.metaKey) || event.altKey) return; const key = event.key.toLowerCase(); const name = key === 'n' ? 'new' : key === 'o' ? 'open' : key === 's' ? (event.shiftKey ? 'save-as' : 'save') : null; if (name) { event.preventDefault(); action(name); } });
+window.close = () => { action('close'); };
+window.addEventListener('beforeunload', event => {
+  event.preventDefault();
+  event.returnValue = false;
+  action('close');
+});
 if (!window.mdlite) { setBusy(true); status('Native document bridge unavailable. Open mdlite in the desktop app.', true); }
 else {
   window.mdlite.onCommand(action);

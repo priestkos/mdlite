@@ -29,3 +29,13 @@ test('binary Markdown is rejected without replacing the active document', async 
     assert.equal(store.text, 'keep');
   } finally { await fs.rm(folder, { recursive: true, force: true }); }
 });
+
+test('drafts remain dirty when their content cannot be saved', async () => {
+  const store = new DocumentStore();
+  store.changed('before\u0000after');
+  assert.equal(store.snapshot().dirty, true);
+  await assert.rejects(() => store.save('invalid.md', store.text), /NUL/);
+  store.changed('x'.repeat(MAX_BYTES + 1));
+  assert.equal(store.snapshot().dirty, true);
+  await assert.rejects(() => store.save('invalid.md', store.text), /smaller than 10 MB/);
+});

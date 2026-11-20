@@ -8,6 +8,7 @@ function validateText(text) {
   if (typeof text !== 'string' || Buffer.byteLength(text, 'utf8') > MAX_BYTES) {
     throw new Error('Markdown must be UTF-8 text smaller than 10 MB.');
   }
+  if (text.includes('\u0000')) throw new Error('Markdown cannot contain NUL characters. Remove them before saving.');
 }
 
 async function readMarkdown(target) {
@@ -39,7 +40,12 @@ class DocumentStore {
 
   snapshot() { return { path: this.path, text: this.text, dirty: this.text !== this.savedText }; }
 
-  changed(text) { validateText(text); this.text = text; }
+  changed(text) {
+    // Retain even an invalid/oversize draft so close protection cannot lose it.
+    // The stricter file policy belongs at open/save, not draft synchronization.
+    if (typeof text !== 'string') throw new Error('Markdown must be UTF-8 text.');
+    this.text = text;
+  }
 
   reset() { this.path = null; this.text = ''; this.savedText = ''; return this.snapshot(); }
 
