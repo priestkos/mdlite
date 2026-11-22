@@ -1,4 +1,5 @@
 import './style.css';
+import './accessibility.css';
 import { Editor } from '@tiptap/core';
 import { EditorState } from '@tiptap/pm/state';
 import StarterKit from '@tiptap/starter-kit';

@@ -1,0 +1,105 @@
+/* Readable, low-glare defaults. Loaded after the base layout. */
+:root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 17px;
+  color: #252e2b;
+  background: #cdd1c4;
+  --paper: #f4efdf;
+  --surface: #e9e5d8;
+  --ink: #252e2b;
+  --muted: #4c574e;
+  --border: #929b8d;
+  --accent: #14594b;
+}
+button:focus-visible, select:focus-visible, textarea:focus-visible, .ProseMirror:focus-visible {
+  outline: 3px solid #124e94;
+  outline-offset: 3px;
+}
+button:disabled, select:disabled { opacity: 1; color: #687166; background: #deded4; }
+.topbar { min-height: 76px; height: auto; padding: 12px 24px; gap: 24px; background: var(--surface); border-color: var(--border); }
+.brand { width: 220px; font-size: 26px; color: #173e33; }
+.brand svg { width: 40px; height: 40px; }
+.file-actions { gap: 8px; }
+.file-actions button { min-height: 46px; border: 1px solid #849486; background: var(--paper); padding: 8px 16px; font-size: 17px; color: var(--ink); }
+.file-actions button[data-action=save] { background: var(--accent); color: #fff7df; }
+button:hover:not(:disabled) { background: #cbdac8; color: #173e33; }
+.offline { color: var(--muted); font-size: 16px; }
+.offline span { background: var(--accent); }
+.sidebar { width: 270px; padding: 26px 20px; background: #dcded2; border-color: var(--border); }
+.eyebrow, .outline-header { font-size: 16px; color: var(--muted); letter-spacing: .04em; }
+.document-name { font-size: 20px; color: var(--ink); }
+.file-detail { font-size: 16px; color: var(--muted); line-height: 1.5; }
+.outline-header { margin: 30px 0 12px; }
+.outline-header span { color: var(--muted); }
+#outline { min-height: 0; }
+.outline-item { min-height: 44px; font-size: 17px; line-height: 1.4; padding: 10px 6px; white-space: normal; overflow-wrap: anywhere; color: #34483c; }
+.outline-item.level-2 { padding-left: 18px; }
+.outline-item.level-3 { padding-left: 28px; }
+.outline-empty, .sidebar-bottom { font-size: 16px; color: var(--muted); }
+.sidebar-bottom { padding-top: 20px; }
+.sidebar-bottom strong, .sidebar-mark { color: #34483c; }
+.document-bar { height: auto; min-height: 72px; gap: 16px; padding: 10px 24px; background: var(--surface); border-color: var(--border); }
+.breadcrumb, .breadcrumb b { font-size: 16px; color: var(--muted); letter-spacing: 0; }
+.breadcrumb strong { font-size: 17px; color: var(--ink); }
+.modes { flex: none; gap: 4px; background: #d2d6c9; border-color: #869381; }
+.modes button { min-height: 44px; padding: 8px 16px; font-size: 17px; color: #34483c; }
+.modes button.selected { background: var(--accent); color: #fff7df; box-shadow: none; }
+.toolbar { flex: none; gap: 6px; padding: 12px 20px; background: var(--surface); border-color: var(--border); }
+.toolbar select { min-height: 44px; width: 155px; max-width: none; font-size: 17px; padding: 7px; color: var(--ink); background: var(--paper); border-color: #849486; }
+.toolbar button { min-height: 44px; font-size: 16px; gap: 7px; padding: 8px 11px; color: #34483c; background: var(--paper); border: 1px solid #a3ac9b; }
+.toolbar button span { display: inline; }
+.toolbar button b, .toolbar button strong, .toolbar button em, .toolbar button s { font-size: 20px; color: inherit; }
+.toolbar button.active { background: #c5d9bf; color: #173e33; border-color: #42653f; }
+.divider { border-color: var(--border); margin: 0 3px; }
+.notice { font-size: 16px; line-height: 1.5; color: #594012; background: #f0dfb7; border-color: #a58b59; }
+.canvas { min-height: 0; padding: 28px 24px 44px; background: #cdd1c4; }
+.page { width: min(100%, 900px); padding: 40px 48px 64px; background: var(--paper); border-color: #a0a78f; }
+.page-kicker { font-size: 16px; letter-spacing: .04em; color: #4c6051; margin-bottom: 28px; }
+.page-kicker span { color: var(--accent); font-size: 24px; }
+.ProseMirror { font-size: 21px; line-height: 1.8; color: var(--ink); }
+.ProseMirror h1 { font-size: 36px; line-height: 1.3; letter-spacing: -.02em; color: #183e30; }
+.ProseMirror h2 { font-size: 29px; line-height: 1.4; color: #183e30; }
+.ProseMirror h3 { font-size: 25px; line-height: 1.5; color: #183e30; }
+.ProseMirror h4, .ProseMirror h5, .ProseMirror h6 { font-size: 23px; color: #183e30; }
+.ProseMirror p { margin-bottom: 20px; }
+.ProseMirror li p { margin: 0; }
+.ProseMirror strong { color: #183e30; }
+.ProseMirror li::marker { color: #42653f; }
+.ProseMirror input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+.ProseMirror blockquote { color: #3d503e; border-color: #62815a; font-style: normal; }
+.ProseMirror pre { background: #e1e2d2; border: 1px solid #a3ac96; }
+.ProseMirror code, #source { font-size: 20px; }
+.ProseMirror td, .ProseMirror th { border-color: #7b8d72; padding: 10px; }
+.ProseMirror th { background: #d7ddc9; }
+.ProseMirror hr { border-color: #7b8d72; }
+.ProseMirror a { color: #14594b; }
+.image-placeholder { color: #3d503e; background: #e1e2d2; border-color: #7b8d72; }
+#source { padding: 12px; border: 1px solid #89957e; line-height: 1.8; color: var(--ink); background: var(--paper); }
+.statusbar { min-height: 46px; height: auto; gap: 16px; padding: 8px 24px; background: var(--surface); border-color: var(--border); font-size: 16px; color: var(--muted); }
+#status { overflow-wrap: anywhere; }
+.statusbar > div:last-child { flex: none; }
+.error { color: #8c231b; }
+@media (max-width: 1000px) {
+  .sidebar { width: 215px; padding: 20px 14px; }
+  .brand { width: auto; }
+  .topbar { gap: 16px; padding: 10px 16px; }
+  .offline { display: none; }
+  .page { padding: 30px; }
+  .toolbar { gap: 5px; padding: 8px 12px; }
+  .divider { display: none; }
+}
+@media (max-width: 820px) {
+  .sidebar { display: none; }
+  .document-bar { padding: 8px 16px; min-height: 64px; }
+  .canvas { padding: 16px; }
+  .page { padding: 24px; }
+  .toolbar button { padding: 7px 9px; }
+  .breadcrumb > span, .breadcrumb > b { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+  button, select, .page, .modes { border: 1px solid ButtonText; }
+  button:focus-visible, .ProseMirror:focus-visible { outline-color: Highlight; }
+}

@@ -137,7 +137,7 @@ async function createWindow() {
     { label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] },
     { label: 'View', submenu: [{ role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { role: 'togglefullscreen' }] },
     { label: 'Help', submenu: [{ label: 'About mdlite', click: () => dialog.showMessageBox(window, {
-      type: 'info', message: 'mdlite 0.1.0', detail: 'A calm, offline Markdown editor.\n\nRich-text edits normalize Markdown. Use Source for advanced syntax. External images and links are disabled.\n\nCtrl+N New · Ctrl+O Open · Ctrl+S Save · Ctrl+Shift+S Save as',
+      type: 'info', message: `mdlite ${app.getVersion()}`, detail: 'A calm, offline Markdown editor.\n\nRich-text edits normalize Markdown. Use Source for advanced syntax. External images and links are disabled.\n\nCtrl+N New · Ctrl+O Open · Ctrl+S Save · Ctrl+Shift+S Save as',
     }) }] },
   ]));
   window.on('close', event => {
