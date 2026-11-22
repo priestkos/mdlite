@@ -1,5 +1,7 @@
 # mdlite
 
+**Current build: 0.1.1 — larger text and low-glare, higher-contrast UI.** See [accessibility update and verification](ACCESSIBILITY.md). Original 0.1.0 handoff remains historical.
+
 A calm, offline Markdown editor for Windows. Open a `.md` file, edit the formatted page, and save ordinary Markdown. Inspired by pdflite's simple, labelled controls.
 
 ## First version
@@ -12,7 +14,7 @@ A calm, offline Markdown editor for Windows. Open a `.md` file, edit the formatt
 
 ## Use
 
-Run the portable `mdlite-0.1.0-windows-x64.exe`. No Node.js installation is required. Builds are unsigned and Windows may show a SmartScreen warning; verify the download source before running. No automatic updater or public release is configured.
+Run the portable `mdlite-0.1.1-windows-x64.exe`. No Node.js installation is required. Builds are unsigned and Windows may show a SmartScreen warning; verify the download source before running. No automatic updater or public release is configured.
 
 **Ctrl+N** New · **Ctrl+O** Open · **Ctrl+S** Save · **Ctrl+Shift+S** Save as.
 

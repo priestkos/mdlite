@@ -7,10 +7,14 @@ Build a private, offline Windows Markdown editor in pdflite's simple style; deli
 User approved implementation and pushing a NEW private GitHub repository. No public release, deployment, auto-update or file association changes. Permanent source and evidence: /root/Projects/mdlite. This is the execution authority; PLAN.md is product/design reference.
 
 ## Current Phase
-Phase 4 — delivery complete.
+Phase 5 — accessible update verified and ready.
 
 ## Next Step
-User trial of the unsigned portable Windows executable; no additional implementation is queued.
+Deliver version0.1.1 ZIP and Telegram parts using the established delivery route.
+
+### Phase 5: Accessible reading update
+**Status:** complete
+Warm low-glare surfaces, minimum16px UI/20px reading text,44px primary controls, visible focus and sampled AA text contrast verified. Windows run45013924395 passed8 unit/18 source GUI/18 packaged GUI tests and portable smoke at candidate615f412. Reviewer disabled-state finding reproduced/fixed/tested. Artifact hash matched. See ACCESSIBILITY.md. Existing untracked package-zip.py preserved.
 
 ## Phases
 ### Phase 1: Discovery and design
