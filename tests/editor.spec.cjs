@@ -14,7 +14,13 @@ test.beforeEach(async () => {
   await expect(window.locator('.ProseMirror')).toBeVisible();
   await app.evaluate(({ dialog }) => { dialog.showMessageBox = async () => ({ response: 1 }); });
 });
-test.afterEach(async () => { if (app) await app.close(); if (userData) await fs.rm(userData, { recursive: true, force: true }); });
+test.afterEach(async () => {
+  if (app) {
+    await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().forEach(window => window.destroy()));
+    await app.close();
+  }
+  if (userData) await fs.rm(userData, { recursive: true, force: true, maxRetries: 5, retryDelay: 300 });
+});
 
 test('launches the editor with labelled modes and a document', async () => {
   for (const name of ['Edit','Read','Source']) await expect(window.getByRole('button', { name, exact: true })).toBeVisible();
