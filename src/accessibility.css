@@ -79,6 +79,20 @@ button:hover:not(:disabled) { background: #cbdac8; color: #173e33; }
 #status { overflow-wrap: anywhere; }
 .statusbar > div:last-child { flex: none; }
 .error { color: #8c231b; }
+/* Keep unavailable actions distinct without making their labels faint. */
+.file-actions button:disabled,
+.file-actions button[data-action=save]:disabled,
+.modes button:disabled,
+.modes button.selected:disabled,
+.toolbar button:disabled,
+.toolbar button.active:disabled,
+.toolbar select:disabled {
+  color: #50594e;
+  background: #d8d9cf;
+  border: 1px dashed #707c68;
+  box-shadow: none;
+  cursor: not-allowed;
+}
 @media (max-width: 1000px) {
   .sidebar { width: 215px; padding: 20px 14px; }
   .brand { width: auto; }

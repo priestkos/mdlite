@@ -44,6 +44,16 @@ test('large readable type, low-glare surfaces, AA text contrast and clear keyboa
   expect(focus.style).toBe('solid');
 });
 
+test('disabled formatting controls are visibly distinct in Read mode', async () => {
+  const bold=page.getByRole('button',{name:'Bold'});
+  const enabled=await bold.evaluate(el=>({background:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderStyle}));
+  await page.getByRole('button',{name:'Read',exact:true}).click();
+  await expect(bold).toBeDisabled();
+  const disabled=await bold.evaluate(el=>({background:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderStyle}));
+  expect(disabled.background).not.toBe(enabled.background);
+  expect(disabled.border).toBe('dashed');
+});
+
 for (const [width,height] of [[1180,800],[760,540]]) {
   test(`labelled controls remain reachable at ${width}x${height}`,async()=>{
     await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),[width,height]);
