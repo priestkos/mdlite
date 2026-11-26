@@ -46,4 +46,4 @@ jobs:
             release/mdlite-*-windows-x64.exe
             evidence/
             test-results/
-          retention-days: 30
+          retention-days: 7
